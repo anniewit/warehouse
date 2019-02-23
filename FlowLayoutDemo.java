@@ -1,5 +1,11 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.io.*;
+import java.util.*;
 
 public class FlowLayoutDemo {
     public final static boolean RIGHT_TO_LEFT = false;
@@ -10,32 +16,106 @@ public class FlowLayoutDemo {
                 ComponentOrientation.RIGHT_TO_LEFT);
         }
 
-
-
         JButton runButton = new JButton("Run");
-        //runButton.setSize(200,50); (funktioniert nicht)
+        runButton.addActionListener(new ActionListener(){
+        
+            //@Override
+            public void actionPerformed(ActionEvent e) {
+                Object selectedAlg = cBox.getSelectedItem();
+                
+                prepareSearch(warehouseFile, orderFile, selectedAlg);
+            }
+        });
 
-        String [] algorithmChoices = {"Hill-Climbing", "First-Choice Hill-Climbing", "Random-Restart Hill-Climbing", "Local-Beam Search", "Simulated Annealing"};
+        JFileChooser chooser = new JFileChooser();
+
+        //String content = new Scanner();
+        // Action for the warehouse button: selects a file
+        JButton warehouseSelector = new JButton("Select: ");
+        //File warehouseFile = new File();
+        warehouseSelector.addActionListener(new ActionListener(){
+        
+
+           public void actionPerformed(ActionEvent e) {
+               chooser.showDialog(pane, "Select as Warehouse File");
+
+               int retVal = chooser.showOpenDialog(pane);
+                if (retVal == JFileChooser.APPROVE_OPTION) {
+                    File selectedfile = chooser.getSelectedFile();
+                   // pane.add(new JLabel(System.out.print(selectedfile)));
+                    //processFile(selectedfile);
+                    /*print selectedfile;
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < selectedfiles.length; i++) {
+                        sb.append(selectedfiles[i].getName() + "\n");
+                    }
+                    .showMessageDialog(frame, sb.toString()); */
+                }
+           }
+        }
+       );
+        
+      /*  public void runButton(File newFile) {
+        try {
+            getValue(newFile);
+            FileReader fr = new FileReader(newFile);
+            BufferedReader bufReader = new BufferedReader(fr);
+            Object line;
+            while (line = bufReader.readLine() != null) {
+
+            }
+        }
+ */
+       // Action for the order button: selects a file
+       JButton orderSelector = new JButton("Select: ");
+       orderSelector.addActionListener(new ActionListener(){
+       
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               chooser.showDialog(pane, "Select as Order File");
+           }
+       });
 
         pane.setLayout(new FlowLayout());
 
+        String [] algorithmChoices = {"Hill-Climbing", "First-Choice Hill-Climbing", "Random-Restart Hill-Climbing", "Local-Beam Search", "Simulated Annealing"};
+        JComboBox cBox = new JComboBox<String>(algorithmChoices);
+        
+        
+        //String convertedToString = selectedAlg.toString();
+        
+
+
+
         //fügt Labels (Schilder) und buttons hinzu
         pane.add(new JLabel("Warehouse Information:", JLabel.CENTER));
-        pane.add(new JButton("Insert"), BorderLayout.NORTH);
-        pane.add(new JLabel("Order:", JLabel.CENTER), BorderLayout.NORTH);
-        pane.add(new JButton("Insert"), BorderLayout.NORTH);
-        pane.add(new JLabel("Select Algorithm", JLabel.CENTER), BorderLayout.NORTH);
-        pane.add(new JComboBox<String>(algorithmChoices), BorderLayout.NORTH);
-        pane.add(runButton, BorderLayout.NORTH);
+        pane.add(warehouseSelector);
+        pane.add(new JLabel("Order:", JLabel.CENTER));
+        pane.add(orderSelector);
+        pane.add(new JLabel("Select Algorithm", JLabel.CENTER));
+        pane.add(cBox);
+        pane.add(runButton);
+        //pane.add(new JLabel(convertedToString));
+       // pane.add(new JFileChooser());
+        
+       pane.add(new JLabel("Solution: "));
 
-        // ausgabefeld
+       JLabel ausgabe = new JLabel("...");
+       ausgabe.setPreferredSize(new Dimension(600, 600));
+       ausgabe.setBorder(new LineBorder(Color.BLACK));
+       ausgabe.setBackground(Color.WHITE);
+       ausgabe.setOpaque(true);
+       pane.add(ausgabe);
+       
+      /*    // ausgabefeld
         JPanel ausgabe = new JPanel(); 
-        ausgabe.add(new JSeparator());
+        ausgabe.setLayout(BorderLayout);
+        //ausgabe.add(new JSeparator());
         ausgabe.add(new JLabel("Solution:" ), BorderLayout.SOUTH);
-
+        pane.add(ausgabe);
 
         //ausgabefeld hinzufügen
-        pane.add(ausgabe,BorderLayout.SOUTH);
+         */
     }
 
     /**
@@ -51,24 +131,19 @@ public class FlowLayoutDemo {
         JFrame frame = new JFrame("FlowLayoutDemo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-
-       // JPanel eingabePanel = new JPanel();
-      //  JPanel ausgabePanel = new JPanel();
-      //  ausgabePanel.setPreferredSize(new Dimension(500,600));
-
-        //frame.add(eingabePanel);
+        
+    
         //Set up the content pane.
         addComponentsToPane(frame.getContentPane());
-
-        //ausgabe panel, flow layout
        // frame.add(ausgabePanel);
 
 
         //Display the window.
         frame.pack();
-        frame.setSize(1000,500);//400 width and 500 height
+        frame.setSize(1000,700);//width and height
         frame.setVisible(true);
     }
+
 
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
@@ -78,5 +153,7 @@ public class FlowLayoutDemo {
                 createAndShowGUI();
             }
         });
+    
     }
 }
+
