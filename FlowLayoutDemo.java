@@ -11,6 +11,13 @@ import java.util.*;
 
 public class FlowLayoutDemo {
 
+    // create the elements of the Layout as "global", so that the Buttons can have access to them
+    static JLabel warehouseLabel = new JLabel();
+    static JLabel orderLabel = new JLabel();
+    static String [] algorithmChoices = {"Hill-Climbing", "First-Choice Hill-Climbing", "Random-Restart Hill-Climbing", "Local-Beam Search", "Simulated Annealing"};
+    static JComboBox cBox = new JComboBox<String>(algorithmChoices);
+
+
     public final static boolean RIGHT_TO_LEFT = false;
 
     public static void addComponentsToPane(Container pane) {
@@ -29,18 +36,23 @@ public class FlowLayoutDemo {
                 String warehouseFile = warehouseLabel.getText();
                 String orderFile = orderLabel.getText();
                 orderLabel.setText(selectedAlg);
+/* 
+                //for Testing:
+                System.out.println(selectedAlg);
+                System.out.println(warehouseFile);
+                System.out.println(orderFile); */
 
-                //prepareSearch(warehouseFile, orderFile, selectedAlg);
+                //for next steps
+                prepareSearch(warehouseFile, orderFile, selectedAlg);
             }
         });
 
 
         JFileChooser chooser = new JFileChooser();
 
-        //String content = new Scanner();
         // Action for the warehouse button:  opens dialog to select a file, print path
         JButton warehouseSelector = new JButton("Select: ");
-        JLabel warehouseLabel = new JLabel();
+        //JLabel warehouseLabel = new JLabel();
         warehouseSelector.addActionListener(new ActionListener(){
         
 
@@ -58,19 +70,8 @@ public class FlowLayoutDemo {
         }
        );
         
-      /*  public void runButton(File newFile) {
-        try {
-            getValue(newFile);
-            FileReader fr = new FileReader(newFile);
-            BufferedReader bufReader = new BufferedReader(fr);
-            Object line;
-            while (line = bufReader.readLine() != null) {
-
-            }
-        }
- */
         // Action for the order button: opens dialog to select a file, print path
-        JLabel orderLabel = new JLabel();
+        // JLabel orderLabel = new JLabel();
         JButton orderSelector = new JButton("Select: ");
         orderSelector.addActionListener(new ActionListener(){
        
@@ -90,15 +91,9 @@ public class FlowLayoutDemo {
        });
 
 
-
        //create Layout and Elements
         pane.setLayout(new FlowLayout());
-
-        //creates dropdown-menu with options
-        String [] algorithmChoices = {"Hill-Climbing", "First-Choice Hill-Climbing", "Random-Restart Hill-Climbing", "Local-Beam Search", "Simulated Annealing"};
-        JComboBox cBox = new JComboBox<String>(algorithmChoices);
-              
-
+            
         //fügt Labels (Schilder) und buttons hinzu
         pane.add(new JLabel("Warehouse Information:", JLabel.CENTER));
         pane.add(warehouseSelector); //Button
@@ -108,8 +103,6 @@ public class FlowLayoutDemo {
         pane.add(new JLabel("Select Algorithm", JLabel.CENTER));
         pane.add(cBox);
         pane.add(runButton);
-        //pane.add(new JLabel(convertedToString));
-       // pane.add(new JFileChooser());
         
        pane.add(new JLabel("Solution: "));
 
@@ -122,16 +115,6 @@ public class FlowLayoutDemo {
 
        pane.add(warehouseLabel);
        pane.add(orderLabel);
-       
-      /*    // ausgabefeld
-        JPanel ausgabe = new JPanel(); 
-        ausgabe.setLayout(BorderLayout);
-        //ausgabe.add(new JSeparator());
-        ausgabe.add(new JLabel("Solution:" ), BorderLayout.SOUTH);
-        pane.add(ausgabe);
-
-        //ausgabefeld hinzufügen
-         */
     }
 
     /**
