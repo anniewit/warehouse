@@ -25,7 +25,7 @@ public class FlowLayoutDemo {
             //@Override
             public void actionPerformed(ActionEvent e) {
 
-                STing selectedAlg = (String)cBox.getSelectedItem();
+                String selectedAlg = (String)cBox.getSelectedItem();
                 String warehouseFile = warehouseLabel.getText();
                 String orderFile = orderLabel.getText();
                 orderLabel.setText(selectedAlg);
