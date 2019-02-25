@@ -3,8 +3,15 @@ import java.util.*;
 
 public class SimulatedAnnealing{
 
+ /**
+  * fängt mit random state an, muss daher keinen current state gegeben bekommen
+  * braucht aber die Anzahl der Psus (psuNumber)
+  * Sollte vielleicht die temp. übergeben bekommen?
+  * current State = boolean array!!
+  */
+  public int[] simulatedAnnealing(int psuNumber){
 
-  public int[] simulatedAnnealing(int[] currentState){
+    boolean [] currentState = StateRep.createRandomState(psuNumber);
     //temperature variable that controls search progress
     int temp = 100;
 
