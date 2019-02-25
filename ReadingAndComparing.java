@@ -83,20 +83,22 @@ public class ReadingAndComparing
         }
 
         //die HashMap wird ausgegeben:
-        System.out.println(psus);
-/*TODO:
-    int i = 0;
+        //System.out.println(psus);
+
+    //Neue HashMap für relevante PSUs erstellen:
     HashMap<Integer,ArrayList<Integer>> warehouse = new HashMap<>();
 
+    //Order wird mit den PSU-items vergliechen und in Hashmap gespeichert: 
     for(Map.Entry<Integer,ArrayList<Integer>> entry: psus.entrySet()) {
         ArrayList<Integer> items = entry.getValue();
-        if (orderlist.equals(entry.getKey())) {
-            warehouse.put(entry.getKey(), entry.getValue());
-        }
+        items.retainAll(orderlist);
+        //items.removeAll(Collections.singleton(new ArrayList()));
+        warehouse.put(entry.getKey(), items);
+
     }
     System.out.println(warehouse);
 
-*/
+
 
     //und das gehört zum try dazu..
     } catch (FileNotFoundException e){
