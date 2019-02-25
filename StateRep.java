@@ -7,7 +7,7 @@ public class StateRep{
     public static void main(String[] args){
 
         //nur zum Testen, kann aus anderer Datei aufgerufen werden
-        boolean [] randomState = createRandomState(25); //hier muss die Anzahl der Psus rein
+        //boolean [] randomState = createRandomState(25); //hier muss die Anzahl der Psus rein
         
     }
 
