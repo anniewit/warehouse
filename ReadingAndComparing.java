@@ -88,15 +88,18 @@ public class ReadingAndComparing
     //Neue HashMap für relevante PSUs erstellen:
     HashMap<Integer,ArrayList<Integer>> warehouse = new HashMap<>();
 
-    //Order wird mit den PSU-items vergliechen und in Hashmap gespeichert: 
+    //Order wird mit den PSU-items vergliechen und in Hashmap gespeichert:
     for(Map.Entry<Integer,ArrayList<Integer>> entry: psus.entrySet()) {
         ArrayList<Integer> items = entry.getValue();
         items.retainAll(orderlist);
-        //items.removeAll(Collections.singleton(new ArrayList()));
-        warehouse.put(entry.getKey(), items);
+        if(!items.isEmpty()){
+            warehouse.put(entry.getKey(), items);
+        }
+
 
     }
     System.out.println(warehouse);
+
 
 
 
