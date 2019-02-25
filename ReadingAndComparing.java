@@ -83,20 +83,45 @@ public class ReadingAndComparing
         }
 
         //die HashMap wird ausgegeben:
-        System.out.println(psus);
-/*TODO:
-    int i = 0;
+        //System.out.println(psus);
+
+    //Neue HashMap für relevante PSUs erstellen:
     HashMap<Integer,ArrayList<Integer>> warehouse = new HashMap<>();
 
+    //Order wird mit den PSU-items vergliechen und in Hashmap gespeichert:
     for(Map.Entry<Integer,ArrayList<Integer>> entry: psus.entrySet()) {
         ArrayList<Integer> items = entry.getValue();
-        if (orderlist.equals(entry.getKey())) {
-            warehouse.put(entry.getKey(), entry.getValue());
+        items.retainAll(orderlist);
+        //PSUs werden gelöscht, die keine items haben.
+        if(!items.isEmpty()){
+            warehouse.put(entry.getKey(), items);
         }
     }
-    System.out.println(warehouse);
+    //HashMap wird ausgegeben
+    //System.out.println(warehouse);
 
-*/
+    //------------------------------------------------------------------------------------
+    //Identifiers der PSUs werden in ein Array (identifieres) gespeichert
+    Set<Integer> keys = warehouse.keySet();
+    Integer[] identifieres = keys.toArray(new Integer[keys.size()]);
+    //für die Ausgabe:
+    //for(int i = 0; i <= identifieres.length - 1; i++){
+    //    System.out.println(identifieres[i]);
+    //}
+
+    //---------------------------------------------------------------------------------------
+    //Ein booleanArray wird mit Länge Anzahl der PSUs erstellt
+    boolean[] randomStartingState = new boolean[identifieres.length];
+    //Dieser wird mit random boolean values gefüllt:
+    Random random = new Random();
+    for(int i = 0; i <= identifieres.length - 1; i++){
+        randomStartingState[i] = random.nextBoolean();
+        //booleanArray wird ausgegeben:
+        System.out.println(randomStartingState[i]);
+    }
+
+
+
 
     //und das gehört zum try dazu..
     } catch (FileNotFoundException e){
