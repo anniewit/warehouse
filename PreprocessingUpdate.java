@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class PreprocessingUpdate {
 
-    private static String orderPath = ".\\order11.txt";
-    private static String warehousePath = ".\\problem1.txt";
+    private String orderPath; //= ".\\order11.txt";
+    private String warehousePath; // = ".\\problem1.txt";
 
 
 /*    public static void main(String[] args) {
@@ -16,21 +16,20 @@ public class PreprocessingUpdate {
 
         System.out.println(Arrays.asList(map));
 
-             // print for testing
-        for (int i = 0; i < arr.length; i++) {
-            if (i > 0) {
-               System.out.print(", ");
-            }
-            System.out.print(arr[i]);
-        }
+    } */
 
-    }
-
-    public static void prepare(String warehousePath, String orderPath, String selectedAlg, int repetitions){
-        HashMap reduced = generateHashMap(warehousePath, orderPath);
+    public void prepare(String whPath, String ordPath, String selectedAlg, int repetitions){
+        this.orderPath = ordPath;
+        this.warehousePath = whPath;
+        
+        HashMap reduced = reducePsus();
+        int orderSize = orderReader().size();
+/*         HashMap reduced = generateHashMap(warehousePath, orderPath);
         HashSet orderParsed = orderReader(orderPath); //could also be int, maybe better
-        int orderSize = orderParsed.size();
-        switch (selectedAlg){
+         */
+
+
+/*         switch (selectedAlg){
             case "Hill-Climbing": TryingHillClimbing.hillClimbing(reduced, orderSize);
                 break;
             case "First-Choice Hill-Climbing": //firstChoiceHillClimbing(reduced, orderSize);
@@ -41,8 +40,8 @@ public class PreprocessingUpdate {
                 break;
             case "Local-Beam Search": LocalBeam.local_beam(reduced, orderSize, repetitions);
                 break;
-        }
-    } */
+        } */
+    } 
 
     public BufferedReader read(File file) throws FileNotFoundException {
         //BufferedReader ließt Warenhaus ein:
@@ -51,7 +50,7 @@ public class PreprocessingUpdate {
         return br;
     }
 
-    private HashMap<Integer,String> warehouseReader()throws Exception, FileNotFoundException{
+    private HashMap<Integer,String> warehouseReader() throws Exception, FileNotFoundException{
             //BufferedReader ließt Warenhaus ein:
             //warehousePath = ".\\problem1.txt";
             File whFile = new File(warehousePath);
@@ -139,6 +138,31 @@ public class PreprocessingUpdate {
         return psus;
     }
 
+    public HashMap reducePsus(){
+
+        Preprocessing access = new Preprocessing();
+
+        HashMap<Integer,String> itemsInMap = warehouseReader();
+        ArrayList<Integer> orderlist = /*access.*/gettingTheOrder();
+        HashMap<Integer,ArrayList<Integer>> psus = /*access.*/gettingPSUs();
+
+        //Neue HashMap für relevante PSUs erstellen:
+        HashMap<Integer,ArrayList<Integer>> relevantPSUs = new HashMap<>();
+
+        //Order wird mit den PSU-items verglichen und in Hashmap gespeichert:
+        for(Map.Entry<Integer,ArrayList<Integer>> entry: psus.entrySet()) {
+            ArrayList<Integer> items = entry.getValue();
+            items.retainAll(orderlist);
+            //PSUs werden gelöscht, die keine items haben.
+            if(!items.isEmpty()){
+                relevantPSUs.put(entry.getKey(), items);
+            }
+        }
+
+        //System.out.println(relevantPSUs);
+        return(relevantPSUs);
+}
+/* 
     public static void main(String[] args) throws Exception{
 
         Preprocessing access = new Preprocessing();
@@ -163,6 +187,6 @@ public class PreprocessingUpdate {
         System.out.println(relevantPSUs);
 
 
-    }
+    } */
 
 }
