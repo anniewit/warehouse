@@ -9,20 +9,25 @@ public class SimulatedAnnealing{
   * Sollte vielleicht die temp. übergeben bekommen?
   * current State = boolean array!!
   */
-  public int[] simulatedAnnealing(int psuNumber){
+  public boolean [] simulatedAnnealing(HashMap psuMap, int orderSize){
 
-    boolean [] currentState = StateRep.createRandomState(psuNumber);
+    //get amount of PSUs in order to generate random state
+    Integer [] identifier = StateMethods.getIdentifier(psuMap);
+    int psuNumber = identifier.length;
+
+    boolean [] currentState = StateMethods.createRandomState(psuNumber);
+
     //temperature variable that controls search progress
     int temp = 100;
 
-    finalState = currentState;
+    boolean [] finalState = currentState;
     //create neighbours of current state
-    ArrayList neigbours = new ArrayList<int[]>();
-    stateMethods.createNeighbours(currentState);
+    ArrayList neighbours = new ArrayList<int[]>();
+    neighbours = StateMethods.createNeighbours(currentState, psuNumber);
     //evaluate current state
-    int stateValue = stateMethods.evaluate(currentState);
+    int stateValue = StateMethods.countPsus(currentState, orderSize, psuMap);
     //controls whether current value is already optimal
-    if(stateValue == stateMethods.optimum()){
+    if(stateValue == StateMethods.optimum()){
         return finalState;
     }
 
@@ -35,16 +40,16 @@ public class SimulatedAnnealing{
         return finalState;
       }
 
-      int[] newState = neigbours.getHead();
+      boolean [] newState = neighbours.getHead();
       //controls whether the neighbour list is empty
       if(newState == null){
         finalState = currentState;
         return finalState;
       }
       //evaluates next neighbour
-      int newValue = stateMethods.evaluate(newState);
+      int newValue = StateMethods.countPsus(newState, orderSize, psuMap); //used to be evaluates
       //controls whether neighbour state is optimal
-      if(newValue == stateMethods.optimum()){
+      if(newValue == StateMethods.optimum()){
         finalState = newState;
         return finalState;
       }
