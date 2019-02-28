@@ -4,6 +4,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+
+import sun.print.resources.serviceui_de;
+
 import java.io.*;
 import java.util.*;
 
@@ -34,7 +37,6 @@ public class Interface {
                 String selectedAlg = (String)cBox.getSelectedItem();
                 String warehousePath = warehouseLabel.getText();
                 String orderPath = orderLabel.getText();
-                orderLabel.setText(selectedAlg);
                 int repetition = -1;
 
                 //opens pop-up to specify the repetitions for Local beam search and RR Hill-climbing
@@ -59,7 +61,10 @@ public class Interface {
                 if (warehousePath == "" || orderPath == ""){
                     JOptionPane.showMessageDialog(null, "Please enter an order and warehouse file.");
                 } else{
-                     Preprocessing.prepare(warehousePath, orderPath, selectedAlg, repetition);
+
+                    Order o = new Order(warehousePath, orderPath, selectedAlg, repetition);
+                    PreprocessingUpdate.prepare(o);
+
                 }
  
 /*                 //for Testing:
@@ -137,7 +142,10 @@ public class Interface {
 
         pane.add(warehouseLabel);
         pane.add(orderLabel);
-    }
+    } 
+/*     public static showSolution(HashMap){
+
+    } */
 
     /**
      * Create the GUI and show it.  For thread safety,
