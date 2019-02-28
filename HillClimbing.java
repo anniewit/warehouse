@@ -37,7 +37,7 @@ public class HillClimbing {
     * @ return  randomStartingState     the boolean array
     */
     public boolean[] randomState() throws Exception{
-        Integer[] identifieres = getIdentifiers();
+        Integer[] identifieres = this.getIdentifiers();
         //Ein booleanArray wird mit Länge Anzahl der PSUs erstellt
         boolean[] randomStartingState = new boolean[identifieres.length];
         //Dieser wird mit random boolean values gefüllt:
@@ -139,7 +139,7 @@ public class HillClimbing {
     * @ return  current_value
     *           neighbour_value     returns highest value
     */
-    public Integer bestState(boolean[] currentState)throws Exception{
+    public boolean[] bestState(boolean[] currentState)throws Exception{
 
         int stateLength = currentState.length;
         int current_value = this.countPsus(currentState);
@@ -160,7 +160,7 @@ public class HillClimbing {
                 validStates.add(i);
             }
         }
-        while(x < validStates.size()){
+        while(x < validStates.size() - 1){
             //position des randomStartingState boolean wird hochgezählt
             //die beiden nächsten neighbours werden immer verglichen:
             position = validStates.get(x);
@@ -191,10 +191,11 @@ public class HillClimbing {
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         HillClimbing hillClimbing = new HillClimbing();
-        boolean[] currentState = this.randomState();
-        while(!break){
+        boolean[] currentState = hillClimbing.randomState();
+        int m = 0;
+        while(m <= 5){
             hillClimbing.bestState(currentState);
             //TODO
             //if(termination condition met){
