@@ -28,6 +28,8 @@ First-Choice Hillclimbing
 Is a simplyfied way of doing Hillclimbing. The starting state is also initialized as a random boolean array and the neighbourhood is the same as well. The only difference is that First-Choice takes the first neighbour whose value is better than the one of the starting state. In order to do that, after validation, one neighbour is declared and immediately compared to the starting state. Everything else happens as described above. 
 Random restart Hillclimbing 
 Another variation of the hillclimbing algorithm that does several hillclimbing searches consecutively. Out of all these hillclimbing runs the best state is choosen. By calling the Hillclimbing method several times and comparing their return value random restart can be accomplished. 
+Another search algorithm is Simulated Annealing where we allowed the algorithm to make downhill moves and set the temperature to 100 so we have more probabilities to find an optimal solution until the temperature reaches 0 and just returns the current state as solution. We also added 2 methods getHead and removeHead for the list of neighbours. It returns the state, which the algorithm found as best option for order.
+With Local Beam Search we select k best neighbors of all current states. The number of beams(states) on which the algorithms operate can be chosen by the user. We return the best state of our list of states, which were determined the best as a whole by the algorithm.
 
 ##### Objective Function
 ##### Neighborhood
