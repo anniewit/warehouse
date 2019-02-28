@@ -14,7 +14,8 @@ public class RandomRestart {
 
         for(int i = 1; i <= n; i++){
             HillClimbing hillClimbing = new HillClimbing();
-            int state_value = hillClimbing.bestState();
+            boolean[] highestNeighbour = hillClimbing.bestState();
+            int state_value = hillClimbing.countPsus(highestNeighbour);
             state_values[0] = state_value;
             if(state_value[i] > state_values[0]){
                 state_values[0] = state_value[i];

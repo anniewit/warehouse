@@ -7,10 +7,18 @@ import java.nio.*;
 
 public class HillClimbing {
 
-
-    public Integer[] getIdentifiers(){
-        //Identifiers der PSUs werden in ein Array (identifieres) gespeichert
+    /**
+    * getIdentifiers has access to psus HashMap and gets the key of each value
+    * @ param   warehouse       in which PSUs are saved, together with their ID
+    *           keys            the identifieres themselves
+    * @ return  identifieres    an Array that saves the identifieres
+    */
+    public Integer[] getIdentifiers() throws Exception{
+        /**
+        * Calling the Preprocessing class to access the warehouse, etc.
+        */
         PreprocessingUpdate p = new PreprocessingUpdate();
+
         HashMap<Integer,ArrayList<Integer>> warehouse = p.getStateSpace();
         Set<Integer> keys = warehouse.keySet();
         Integer[] identifieres = keys.toArray(new Integer[keys.size()]);
@@ -21,8 +29,14 @@ public class HillClimbing {
         return identifieres;
     }
 
-
-    public boolean[] randomState() {
+    /**
+    * randomState creates a boolean starting state that has random boolean values
+    * @ param   identifieres    the IDs of the PSUs
+    *           random          a class provided by Java to set values at random
+    *           i               a counter, to iterate through the identifiersArray
+    * @ return  randomStartingState     the boolean array
+    */
+    public boolean[] randomState() throws Exception{
         Integer[] identifieres = getIdentifiers();
         //Ein booleanArray wird mit Länge Anzahl der PSUs erstellt
         boolean[] randomStartingState = new boolean[identifieres.length];
@@ -35,10 +49,16 @@ public class HillClimbing {
         }
         return randomStartingState;
     }
-    public boolean check_validity(boolean[] someState){
+
+    /**
+    * backToItems takes state as booleanArray and turns it into an set
+    *
+    * @ new param   integers        list of items in relevant PSUs
+    * @ return      possibleState   a set of items in numbers
+    */
+    public Set<Integer> backToItems(boolean[] someState)throws Exception{
         PreprocessingUpdate p = new PreprocessingUpdate();
         HashMap<Integer,ArrayList<Integer>> warehouse = p.getStateSpace();
-        ArrayList<Integer> orderlist = p.gettingTheOrder();
         Integer[] identifieres = this.getIdentifiers();
         ArrayList<Integer> integers = new ArrayList<Integer>();
 
@@ -52,16 +72,36 @@ public class HillClimbing {
             }
         }
         Set<Integer> possibleState = new LinkedHashSet<Integer>(integers);
+        return possibleState;
+
+    }
+    /**
+    * check_validity determines wether the state is valid
+    * a state is valid if it covers all the items in order,
+    * it is valid when the order and the set have the same length
+    *
+    * @ param   possibleState   HashSet with items of a specific state
+    *           orderlist       contains all items
+    * @ return   boolean         true == state is valid
+    */
+    public boolean check_validity(boolean[] someState)throws Exception{
+        PreprocessingUpdate p = new PreprocessingUpdate();
+        Set<Integer> possibleState = this.backToItems(someState);
+        ArrayList<Integer> orderlist = p.gettingTheOrder();
         //wenn Anzahl der relevanten items gleich dem der Anzahl in order dann ist state valid:
-        //wäre schön wenn man das auseinander ziehen könnte aber dann muss man nochmals durchiterieren.
         if(possibleState.size() == orderlist.size()){
             return true;
         }else{
             return false;
         }
     }
-
-    public Integer countPsus(boolean[] someState){
+    /**
+    * countPsus counts the number of PSUs used by a specific state
+    *
+    * @ param   someState   state using PSUs for which values are true
+    * @ return  countPsus   integer with number of PSUs
+    */
+    public Integer countPsus(boolean[] someState)throws Exception{
         int countPsus = 0;
         //Für jede Position des booleanArray wird überprüft ob boolean gleich true ist
         for(int x = 0; x < someState.length; x++){
@@ -72,8 +112,13 @@ public class HillClimbing {
         return countPsus;
     }
 
-    //neighbour wird erstellt, das heißt ein value des booleanArrays wird verändert
-    public boolean[] neighbour(int n){
+    /**
+    * neighbour creates a neighbour by changing one value of the current state
+    *
+    * @ param
+    * @ return  someState   neighbour of the currentState
+    */
+    public boolean[] neighbour(int n)throws Exception{
         boolean[] someState = randomState();
         if(someState[n]==true){
             someState[n]=false;
@@ -83,41 +128,48 @@ public class HillClimbing {
         return someState;
     }
 
+    /**
+    * bestState does the hillClimbing
+    *
+    * @ param   firstNeighbour
+    *           secondNeighbour     neighbours
+    *           highestNeighbour    neighbour with highest value
+    *           validStates         all positions of neighbours with valid states
+    *           x                   iterates through validStates
+    * @ return  current_value
+    *           neighbour_value     returns highest value
+    */
+    public Integer bestState(boolean[] currentState)throws Exception{
 
+        int stateLength = currentState.length;
+        int current_value = this.countPsus(currentState);
 
-
-    public Integer bestState(){
-        int x = 0;
-        HillClimbing hillClimbing = new HillClimbing();
-        int stateLength = hillClimbing.randomState().length;
         boolean[] firstNeighbour = new boolean[stateLength];
         boolean[] secondNeighbour = new boolean[stateLength];
         boolean[] highestNeighbour = new boolean[stateLength];
-        int neighbour_value;
-        //der current_value ist die Anzahl der PSUs vom startingState
-        boolean[] currentState = hillClimbing.randomState();
-        int current_value = hillClimbing.countPsus(currentState);
-        int position;
 
-        ArrayList<Integer> validStates = new ArrayList<Integer>;
+        int neighbour_value = 0;
+        int position;
+        int x = 0;
+
+        ArrayList<Integer> validStates = new ArrayList<Integer>();
 
         for(int i = 0; i < stateLength; i++){
-            firstNeighbour = hillClimbing.neighbour(i);
-            if(hillClimbing.check_validity(firstNeighbour)==true){
+            firstNeighbour = this.neighbour(i);
+            if(this.check_validity(firstNeighbour)==true){
                 validStates.add(i);
             }
-
         }
         while(x < validStates.size()){
             //position des randomStartingState boolean wird hochgezählt
             //die beiden nächsten neighbours werden immer verglichen:
-            position = validStates.get(x)
-            firstNeighbour = hillClimbing.neighbour(position);
-            int neighbourONe = hillClimbing.countPsus(firstNeighbour);
+            position = validStates.get(x);
+            firstNeighbour = this.neighbour(position);
+            int neighbourOne = this.countPsus(firstNeighbour);
             x++;
-            position = validStates.get(x)
-            secondNeighbour = hillClimbing.neighbour(i);
-            int neighbourTwo = hillClimbing.countPsus(secondNeighbour);
+            position = validStates.get(x);
+            secondNeighbour = this.neighbour(x);
+            int neighbourTwo = this.countPsus(secondNeighbour);
             //Der neighbour, dessen PSUzahl am kleinsten ist wird gespeichert
             if(neighbourOne >= neighbourTwo){
                 //highestNeighbour = firstNeighbour;
@@ -131,14 +183,28 @@ public class HillClimbing {
         }
         //wenn der highestNeighbour größer ist, dann überschreibe randomStartingState.
         if(neighbour_value <= current_value){
-            System.out.println(current_value + "It was the starting state! Yah!!");
-            return current_value;
+            return currentState;
         }else{
-            System.out.println(neighbour_value + "It was the neighbour!");
-            return neighbour_value;
-            //randomStartingState = highestNeighbour;
+            System.arraycopy(highestNeighbour,0,currentState,0,stateLength);
+            return currentState;
         }
     }
+
+
+    public static void main(String[] args){
+        HillClimbing hillClimbing = new HillClimbing();
+        boolean[] currentState = this.randomState();
+        while(!break){
+            hillClimbing.bestState(currentState);
+            //TODO
+            //if(termination condition met){
+            //    break;
+            //}
+        }
+    }
+
+
+
 
 
 
