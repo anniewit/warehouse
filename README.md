@@ -21,9 +21,9 @@ The result is a reduced Hashmap that maps the ordered items to PSU identifiers.
 
 #### Local Search Algorithms
 
-Another search algorithm is Simulated Annealing where we allowed the algorithm to make downhill moves and set the temperature to 100 so we have more probabilities to find an optimal solution until the temperature reaches 0 and just returns the current state as solution. We also added 2 methods getHead and removeHead for the list of neighbours.
+Another search algorithm is Simulated Annealing where we allowed the algorithm to make downhill moves and set the temperature to 100 so we have more probabilities to find an optimal solution until the temperature reaches 0 and just returns the current state as solution. We also added 2 methods getHead and removeHead for the list of neighbours. It returns the state, which the algorithm found as best option for order.
 
-With Local Beam Search we select k best neighbors of all current states. The number of beams can be chosen by the user. 
+With Local Beam Search we select k best neighbors of all current states. The number of beams(states) on which the algorithms operate can be chosen by the user. We return the best state of our list of states, which were determined the best as a whole by the algorithm.
 
 ##### Objective Function
 ##### Neighborhood
