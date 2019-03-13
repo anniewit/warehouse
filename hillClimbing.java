@@ -1,103 +1,122 @@
-// hill climbing
-// muss übergeben bekommen: int array mit order (order[]), 2D Array mit PSUs und ites in psu,
-//hill climbing typ als int(default = 0, first choice = -1, restart = [1,unendlich) )
+import java.io.*;
+import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.*;
 
+public class HillClimbing {
 
-public class hillClimbing {
+    public static boolean [] hillClimbing(Order o) throws Exception{ //?
 
-    public static void main(String[] args) {
-
-      //1. initializations
-      //1.1 value of current state --> start with worst case
-      int c_value = number_PSUs;
-      //1.2 represenation of current state (all booleans default to value "false")
-      boolean[] current_state = new boolean[number_PSUs]; //!! number of PSUs has to be input
-      //1.3  value of neighbour state
-      int n_value = 0;
-      //1.4 marker to remember the best neighbour --> if current state is best state,
-      //    then the marker has an invalid value
-      int marker = current_state.length;
-      //1.5 marker to mark the value of best neighbour
-      int m_value = 0;
-      //1.6 represenation of neighbour state (all booleans default to value "false")
-      boolean[] neighbour_state = new boolean[number_PSUs];
-      //1.7 one way flag which tells us when we are done
-      boolean continue = true;
-
-
-      wile(continue){
-        //2. go through neighbours and remember the one with the best value
-        //2.1 go through neighbours and check if valid (= all states which can be reached by changing one value of array)
-        for(int n = 0; n < neighbour_state.length; n++){
-          //2.2 change one value of state
-          neighbour_state[n] != current_state[n];
-          //2.3 check if neighbour is valid
-          if(check_validity(neighbour_state[])){
-          //2.4 if neighbour valid --> calculate value of neighbour
-            for(int v = 0; v < neighbour_state.length; v++){
-              //2.4.1 objective function = number of used PSUs = sum of values of array of state
-                if(current_state[v] == true){
-                n_value++;
-              }
-            }
-            //2.5 check if this neighbor has a better value than the current state and all previos neighbours
-            if(n_value < c_value && n_value < m_value){
-              //2.5.2 if value of neighbour is lower (less PSUs used) -->remember this neighbour
-              marker = n;
-              m_value = n_value;
-            }
-          //2.6 revert change and try next neighbour
-          neighbour_state[n] = current_state[n];
-        }
-      }
-      //3. if the best neighbor has a better value than the current states
-      //3.1 our new state is the neighbor with highest value
-      if(n_value < c_value){
-        c_value = n_ value;
-        for(int b = 0; b < neighbour_state.length; b++){
-          current_state[b] = neighbour_state[b];
-          }
-        //3.2 else we have reached lokal optimum and can return state and value
-        }else{
-          return(current_state[], c_value);
-          continue = false;
-        }
-      }
-    }
-  }
-
-
-
-
-
-/*        do
-      neighbor ← neighbor of current with highest value if value(neighbor) ≤ value(current)
-      return current current←neighbor
-      until termination condition is met
-    }
-  } */
-
-  public static boolean check_validity{
-    //1. initializations
-    int item = 0;
-
-    // check for each item in the order, if it is included in items_carried
-    for(int i = 0; i < order.length; i++){
-      item = order[i];
-      for(int b = 0; b < current_state.length; b++){
-        // if PSU is used, look if the item is in this PSU
-        if(current_state[b] == 1){
-          for(int p = 0; p < psus[].length; p++){
+       // HillClimbing hillClimbing = new HillClimbing();
+        boolean[] currentState = StateMethods.createRandomState(o);
+        System.out.println(Arrays.toString(currentState));
+        int m = 0;
+        int maxIterations = 10; //arbitrary
+        boolean[] neighbour;    
+        while(m <= maxIterations){
+            neighbour = bestState(o, currentState);
+            System.out.println("Neighbour " + Arrays.toString(neighbour)); //
+            System.out.println(StateMethods.countPsus(neighbour));
+            System.out.println(StateMethods.countPsus(currentState));
             
-          }
+            if(StateMethods.countPsus(neighbour) >= StateMethods.countPsus(currentState)){
+                return(currentState);
+            } else {
+                currentState = neighbour;
+            }
+            m++;
+            System.out.println(m); //
         }
+        System.out.println(Arrays.toString(currentState)); //
+        return currentState;
+    }
 
-      }
+    /**
+    * bestState does the hillClimbing
+    *
+    * @ param   firstNeighbour
+    *           secondNeighbour     neighbours
+    *           lowestNeighbour    neighbour with highest value
+    *           validStates         all positions of neighbours with valid states
+    *           x                   iterates through validStates
+    * @ return  current_value
+    *           neighbour_value     returns highest value
+    */
+    public static boolean[] bestState(Order o, boolean[] currentState) throws Exception{
+
+        int stateLength = currentState.length;
+        int current_value = StateMethods.countPsus(currentState);
+
+        boolean[] firstNeighbour = new boolean[stateLength];
+        boolean[] secondNeighbour = new boolean[stateLength];
+        boolean[] lowestNeighbour = new boolean[stateLength];
+
+        int neighbour_value = 0;
+        int position;
+        int x = 0;
+
+        ArrayList<Integer> validStates = new ArrayList<Integer>();
+
+        for(int i = 0; i < stateLength; i++){
+            firstNeighbour = neighbour(o,i);
+            if(StateMethods.check_validity(o, firstNeighbour) == true){
+                validStates.add(i);
+            }
+        }
+        while(x < validStates.size() - 1){
+            //position des randomStartingState boolean wird hochgezählt
+            //die beiden nächsten neighbours werden immer verglichen:
+            position = validStates.get(x);
+            firstNeighbour = neighbour(o,position);
+            int neighbourOne = StateMethods.countPsus(firstNeighbour);
+            x++;
+            position = validStates.get(x);
+            secondNeighbour = neighbour(o,x);
+            int neighbourTwo = StateMethods.countPsus(secondNeighbour);
+            //Der neighbour, dessen PSUzahl am kleinsten ist wird gespeichert
+            if(neighbourOne >= neighbourTwo){
+                //lowestNeighbour = firstNeighbour;
+                System.arraycopy(firstNeighbour,0,lowestNeighbour,0,stateLength);
+                neighbour_value = neighbourOne;
+            }else{
+                //lowestNeighbour = secondNeighbour;
+                System.arraycopy(secondNeighbour,0,lowestNeighbour,0,stateLength);
+                neighbour_value = neighbourTwo;
+            }
+        }
+        //wenn der lowestNeighbour niedriger ist, dann überschreibe randomStartingState.
+        if(neighbour_value <= current_value){
+            return currentState;
+        }else{
+            System.arraycopy(lowestNeighbour,0,currentState,0,stateLength);
+            return currentState;
+        }
+    }
+
+    /**
+    * neighbour creates a neighbour by changing one value of the current state
+    *
+    * @ param
+    * @ return  someState   neighbour of the currentState
+    */
+    public static boolean[] neighbour(Order o, int n) {
+        boolean[] someState = StateMethods.createRandomState(o);
+        if(someState[n]==true){
+            someState[n]=false;
+        }else{
+            someState[n]=true;
+        }
+        return someState;
     }
 
 
-  }
-/* 
 
-  First Choice:
-  n = new Random().nextInt(neighbour_state.length); */
+
+
+
+
+
+
+}
