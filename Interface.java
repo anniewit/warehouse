@@ -1,12 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
-import sun.print.resources.serviceui_de;
-
 import java.io.*;
 import java.util.*;
 
@@ -15,14 +11,16 @@ import java.util.*;
 public class Interface {
 
     // create the elements of the Layout as "global", so that the Buttons can have access to them
-    static JLabel warehouseLabel = new JLabel();
+    static JLabel WAREHOUSE_LABEL = new JLabel();
+    // private static final JLabel warehouseLabel = warehouseLabel;
     static JLabel orderLabel = new JLabel();
     static String [] algorithmChoices = {"Hill-Climbing", "First-Choice Hill-Climbing", "Random-Restart Hill-Climbing", "Local-Beam Search", "Simulated Annealing"};
     static JComboBox cBox = new JComboBox<String>(algorithmChoices);
+    static JLabel ausgabe = new JLabel();
 
     //Ausrichtung: nicht so wichtig
     public final static boolean RIGHT_TO_LEFT = false;
-    public static void addComponentsToPane(Container pane) {
+    public static void addComponentsToPane(Container pane) throws IOException { 
         if (RIGHT_TO_LEFT) {
             pane.setComponentOrientation(
                 ComponentOrientation.RIGHT_TO_LEFT);
@@ -35,7 +33,7 @@ public class Interface {
             public void actionPerformed(ActionEvent e) {
                 //collect necessary info for starting search (both selected files and the selected algorithm)
                 String selectedAlg = (String)cBox.getSelectedItem();
-                String warehousePath = warehouseLabel.getText();
+                String warehousePath = WAREHOUSE_LABEL.getText();
                 String orderPath = orderLabel.getText();
                 int repetition = -1;
 
@@ -62,18 +60,21 @@ public class Interface {
                     JOptionPane.showMessageDialog(null, "Please enter an order and warehouse file.");
                 } else{
 
+                    System.out.println(warehousePath + orderPath + selectedAlg + repetition);
                     Order o = new Order(warehousePath, orderPath, selectedAlg, repetition);
-                    PreprocessingUpdate.prepare(o);
 
+                    
+                    System.out.println(o.getAlg()); //test
+                    try{
+                        Preprocessing.prepare(o);
+                    }catch (IOException ioex){
+
+                    }catch (Exception ex ){
+
+                    }
+                    
+                    printSolution(o);//, o.getSolution()
                 }
- 
-/*                 //for Testing:
-                System.out.println(selectedAlg);
-                System.out.println(warehousePath);
-                System.out.println(orderPath); 
-                System.out.println(repetition);
- */
-
             }
         });
 
@@ -91,12 +92,12 @@ public class Interface {
                 if (retVal == JFileChooser.APPROVE_OPTION) {
                     File selectedfile = chooser.getSelectedFile();
                     String path = selectedfile.getAbsolutePath();
-                    warehouseLabel.setText(path);
+                    WAREHOUSE_LABEL.setText(path);
 
                 }
            }
         }
-       );
+        );
         
         // Action for the order button: opens dialog to select a file, print path
         JButton orderSelector = new JButton("Select");
@@ -115,10 +116,6 @@ public class Interface {
 
        });
 
-       //specified parameter input for Local Beam Search and Random-Restart Hill-Climbing
-       //JTextField nrInput = new JTextField(20);
-      // nrInput.setEditable(true);
-
        //create Layout and Elements
         pane.setLayout(new FlowLayout());
             
@@ -132,27 +129,27 @@ public class Interface {
         pane.add(runButton);
         pane.add(new JLabel("Solution: "));
 
-        //print out solution: muss noch angepasst werden
-        JLabel ausgabe = new JLabel("...");
-        ausgabe.setPreferredSize(new Dimension(900, 600)); //width and height
+        ausgabe.setPreferredSize(new Dimension(900, 1500)); //width and height
         ausgabe.setBorder(new LineBorder(Color.BLACK));
         ausgabe.setBackground(Color.WHITE);
         ausgabe.setOpaque(true);
-        pane.add(ausgabe);
+        ausgabe.setVerticalAlignment(SwingConstants.TOP);
+        //scrollen
+        JScrollPane scroller = new JScrollPane(ausgabe, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        //pane.add(ausgabe);
+        scroller.setPreferredSize(new Dimension(900,900));
+        pane.add(scroller);
 
-        pane.add(warehouseLabel);
+        pane.add(WAREHOUSE_LABEL);
         pane.add(orderLabel);
     } 
-/*     public static showSolution(HashMap){
-
-    } */
 
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
      * event-dispatching thread.
      */
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI() throws IOException {
         //Make sure we have nice window decorations.
         JFrame.setDefaultLookAndFeelDecorated(true);
 
@@ -166,17 +163,35 @@ public class Interface {
 
         //Display the window.
         frame.pack();
-        frame.setSize(1000,700);//width and height
+        frame.setSize(1000,1000);//width and height
         frame.setVisible(true);
     }
 
+    public static void printSolution(Order o){ // ,HashMap<Integer,ArrayList<Integer>><Integer,ArrayList<Integer>> map){
+        HashMap<Integer,String[]> map = o.getSolution();
+        Set psu = map.keySet();
+        int psuNr = psu.size();
+        String solution = "";
+        for(Map.Entry<Integer,String[]> entry: map.entrySet()) {
+            solution += entry.getKey() + " : " + Arrays.toString(entry.getValue());
+            solution += System.lineSeparator() + "<br>";
+        }
 
-    public static void main(String[] args) {
+        ausgabe.setText("<html> Anzahl der PSUS: " + psuNr + "<br>" + solution + "</html>");
+        System.out.println("Anzahl der PSUS: " + psuNr + System.lineSeparator() + solution);
+    }
+        
+    public static void main(String[] args) throws IOException{
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
+            public void run()  {
+                try{
+                    createAndShowGUI();
+                }catch (IOException e){
+
+                }
+                
             }
         });
     

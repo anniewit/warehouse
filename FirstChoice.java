@@ -7,45 +7,38 @@ import java.util.*;
 */
 public class FirstChoice {
 
-    public static void main(String[] args){
-        /**
-        * HillClimbing class is called in order to gain access to methods
-        */
-        HillClimbing hillClimbing = new HillClimbing();
-        /**
-        * @param    currentState    getting a random starting state as the current state
-        *           stateLength     getting its length
-        *           current_value   getting its value (the number of PSUs it uses).
-        */
-        boolean[] currentState = hillClimbing.randomState();
-        int stateLength = hillClimbing.randomState().length;
-        int current_value = hillClimbing.countPsus(currentState);
+    public static boolean[] firstChoice(Order o) throws Exception{
+        
+        //random initialization
+        boolean[] currentState = StateMethods.createRandomState(o);
+        //create neighborhood of current state
+          ArrayList<boolean[]> neighbours = new ArrayList<boolean[]> (StateMethods.createNeighbours(currentState)); //.clone();/
+          System.out.println("1st Choice: "); 
 
-        /**
-        * @param    neighbour   initializing new state holder for current's neighbour
-        */
-        boolean[] neighbour = new boolean[stateLength];
+        System.out.println(StateMethods.evaluate(o, currentState));
+        System.out.println(Arrays.toString(currentState));
 
-        int counter = 0; //counts position of the currentState array
+        //backup if other states are all worse --> works as "else"-statement/ dummy
+        boolean[] altState = currentState;
 
-        //MUSS NOCH KOMMENTIERT WERDEN:
-        while(counter < (stateLength - 1)){
-            neighbour = hillClimbing.neighbour(i);
-            if(hillClimfalse.check_validity(neighbour)==false){
-                break;
-            int neighbour_value = hillClimbing.countPsus(neighbour);
-            if(neighbour_value <= current_value){
-                counter++;
-            }else{
-                System.arraycopy(neighbour,0,currentState,0,stateLength);
-                break;
+        
+        //2. for schleife, falls in neighbourhood kein passender State?
+        for(int j = 0; j < currentState.length; j++){
+            for(int i = 0; i < currentState.length; i++){
+                boolean[] currNeighbour = neighbours.get(i); 
+                    
+                //change if current state is not valid or if neighbor is better --> has less psus and is valid      
+                if(StateMethods.evaluate(o, currNeighbour) < StateMethods.evaluate(o, currentState)){
+                    return currNeighbour;
+                }
+                currentState = currNeighbour;
             }
-
         }
+        System.out.println(StateMethods.evaluate(o, currentState));
+        System.out.println(Arrays.toString(currentState));
+        return altState; //if no other state is better than the random state, return random state
 
 
 
-
-    }
-
+}
 }
