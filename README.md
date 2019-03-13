@@ -5,6 +5,12 @@ The warehouse consists of multiple Portable Storage units (PSUs), in which the i
 This programm calculates which PSUs to send to the packaging station using different local search algorithms.
 Warehouse, order and the algorithm can be specified by the user. 
 
+## How to use:
+1. Compile/execute Interface 
+2. Enter warehouse and order files as .txt, select algorithm and click run
+3. see solution
+4. repeat with different files or algorithms
+
 #### Interface
 The interface class takes in the input of the user (a warehouse file, an order file and a selected algorithm) and hands this to the next processing stage.
 //(Interface is supposed to be self-explaining)
@@ -56,7 +62,3 @@ With **Local Beam Search** we select k best neighbors of all current states. The
 To access the solution, we translate the boolean array back to the PSU identifiers and items stored in them by iterating the Hashmap.
 
 
-## How to use:
-1. Compile/execute Interface 
-2. Enter warehouse and order files as .txt, select algorithm and click run
-3. see solution
