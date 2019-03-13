@@ -54,3 +54,9 @@ With **Local Beam Search** we select k best neighbors of all current states. The
 
 #### Postprocessing
 To access the solution, we translate the boolean array back to the PSU identifiers and items stored in them by iterating the Hashmap.
+
+
+## How to use:
+1. Compile/execute Interface 
+2. Enter warehouse and order files as .txt, select algorithm and click run
+3. see solution

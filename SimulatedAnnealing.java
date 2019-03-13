@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class SimulatedAnnealing{
+public  class SimulatedAnnealing{
 
  /**
   * fängt mit random state an, muss daher keinen current state gegeben bekommen
@@ -9,23 +9,18 @@ public class SimulatedAnnealing{
   * Sollte vielleicht die temp. übergeben bekommen?
   * current State = boolean array!!
   */
-  public boolean [] simulatedAnnealing(HashMap psuMap, int orderSize){
+  public static boolean [] simulatedAnnealing(Order o){
 
-    //get amount of PSUs in order to generate random state
-    Integer [] identifier = StateMethods.getIdentifier(psuMap);
-    int psuNumber = identifier.length;
-
-    boolean [] currentState = StateMethods.createRandomState(psuNumber);
+    boolean [] currentState = StateMethods.createRandomState(o);
 
     //temperature variable that controls search progress
     int temp = 100;
 
     boolean [] finalState = currentState;
     //create neighbours of current state
-    ArrayList neighbours = new ArrayList<int[]>();
-    neighbours = StateMethods.createNeighbours(currentState, psuNumber);
+    ArrayList neighbours = StateMethods.createNeighbours(currentState);
     //evaluate current state
-    int stateValue = StateMethods.countPsus(currentState, orderSize, psuMap);
+    int stateValue = StateMethods.countPsus( currentState);
     //controls whether current value is already optimal
     if(stateValue == StateMethods.optimum()){
         return finalState;
@@ -47,9 +42,9 @@ public class SimulatedAnnealing{
         return finalState;
       }
       //evaluates next neighbour
-      int newValue = StateMethods.countPsus(newState, orderSize, psuMap); //used to be evaluates
+      int newValue = StateMethods.countPsus( newState); //used to be evaluates
       //controls whether neighbour state is optimal
-      if(newValue == StateMethods.optimum()){
+      if(newValue == StateMethods.check_validity()){
         finalState = newState;
         return finalState;
       }
