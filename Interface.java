@@ -12,7 +12,6 @@ public class Interface {
 
     // create the elements of the Layout as "global", so that the Buttons can have access to them
     static JLabel WAREHOUSE_LABEL = new JLabel();
-    // private static final JLabel warehouseLabel = warehouseLabel;
     static JLabel orderLabel = new JLabel();
     static String [] algorithmChoices = {"Hill-Climbing", "First-Choice Hill-Climbing", "Random-Restart Hill-Climbing", "Local-Beam Search", "Simulated Annealing"};
     static JComboBox cBox = new JComboBox<String>(algorithmChoices);
@@ -60,11 +59,8 @@ public class Interface {
                     JOptionPane.showMessageDialog(null, "Please enter an order and warehouse file.");
                 } else{
 
-                    System.out.println(warehousePath + orderPath + selectedAlg + repetition);
                     Order o = new Order(warehousePath, orderPath, selectedAlg, repetition);
 
-                    
-                    System.out.println(o.getAlg()); //test
                     try{
                         Preprocessing.prepare(o);
                     }catch (IOException ioex){
@@ -73,7 +69,7 @@ public class Interface {
 
                     }
                     
-                    printSolution(o);//, o.getSolution()
+                    printSolution(o);
                 }
             }
         });
@@ -86,7 +82,6 @@ public class Interface {
         warehouseSelector.addActionListener(new ActionListener(){
         
            public void actionPerformed(ActionEvent e) {
-                chooser.showDialog(pane, "Select as Warehouse File");
 
                 int retVal = chooser.showOpenDialog(pane);
                 if (retVal == JFileChooser.APPROVE_OPTION) {
@@ -104,7 +99,6 @@ public class Interface {
         orderSelector.addActionListener(new ActionListener(){
        
            public void actionPerformed(ActionEvent e) {
-               chooser.showDialog(pane, "Select as Order File");
 
                int retVal = chooser.showOpenDialog(pane);
                 if (retVal == JFileChooser.APPROVE_OPTION) {
@@ -136,7 +130,6 @@ public class Interface {
         ausgabe.setVerticalAlignment(SwingConstants.TOP);
         //scrollen
         JScrollPane scroller = new JScrollPane(ausgabe, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        //pane.add(ausgabe);
         scroller.setPreferredSize(new Dimension(900,900));
         pane.add(scroller);
 
@@ -166,8 +159,11 @@ public class Interface {
         frame.setSize(1000,1000);//width and height
         frame.setVisible(true);
     }
-
-    public static void printSolution(Order o){ // ,HashMap<Integer,ArrayList<Integer>><Integer,ArrayList<Integer>> map){
+    /**
+     * prints the solution to the screen of the GUI into ausgabe label
+     * shows amount of Psus used and which items are stored in each PSU
+     */
+    public static void printSolution(Order o){ 
         HashMap<Integer,String[]> map = o.getSolution();
         Set psu = map.keySet();
         int psuNr = psu.size();
@@ -177,8 +173,7 @@ public class Interface {
             solution += System.lineSeparator() + "<br>";
         }
 
-        ausgabe.setText("<html> Anzahl der PSUS: " + psuNr + "<br>" + solution + "</html>");
-        System.out.println("Anzahl der PSUS: " + psuNr + System.lineSeparator() + solution);
+        ausgabe.setText("<html> Amount of PSUs used: " + psuNr + "<br>" + solution + "</html>");
     }
         
     public static void main(String[] args) throws IOException{

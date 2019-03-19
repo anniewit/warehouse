@@ -6,17 +6,16 @@ import java.util.*;
  */
 public class Order {
     
-    private String orderPath;
-    private String warehousePath;
-    private String alg;
-    private int repetitions;
-    private HashMap<Integer,ArrayList<Integer>> reduced; //mapping of PSU identifiers to items, after deleting unused items and Psus
-    private int stateSize;
-    private Integer[] psuIDs; //holds names of PSUs
+    private String orderPath;       //Path inserted by user as order file
+    private String warehousePath;   //Path inserted by user as warehouse file
+    private String alg;             //algorithm selected by user
+    private int repetitions;        //number of repetitions for local beam serach/parallel hill-climbing
+    private HashMap<Integer,ArrayList<Integer>> reduced; //mapping of PSU identifiers to items, after deleting items and Psus that are not part of order
+    private int stateSize;          //size of state representation --> number of all PSUs that contain ordered items 
+    private Integer[] psuIDs;       //holds names/itendifiers of PSUs
     private ArrayList orderedItems; //holds identifiers of items that were ordered Integers
-   // private HashMap<Integer,ArrayList<Integer>> 
-    private HashMap<Integer,String> taggedItems; //contains the names of all items as string mapped to their identifiers (0,1,2,..)
-    private HashMap<Integer, String[]> finalPsus; //holds the final psu identifiers and their (ordered) items
+    private HashMap<Integer,String> taggedItems;    //contains the names of all items as string mapped to their identifiers (0,1,2,..)
+    private HashMap<Integer, String[]> finalPsus;   //holds the final psu identifiers and their (ordered) items
 
 
     public Order (String whPath, String ordPath, String selAlg, int rep){

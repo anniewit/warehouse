@@ -5,30 +5,33 @@ import java.util.*;
 public class StateMethods{
 
    /**
-    * evaluation function that should be minimized: number of Psus used, 
-    * penalty if state is not valid (doesn't carry all items ordered): setting to max amount of psus on eval function
-    * --> this way an invalid state will always be worse or equal, so we never choose an invalid state
+    * evaluation function that should be minimized: number of Psus used 
+    * penalty if state is not valid (doesn't carry all items ordered): setting to max amount of psus + 1
+    * --> this way an invalid state will always be worse, so we never choose an invalid state
+    *
+    * @ return int evaluation of state
     */    
     public static int evaluate(Order o, boolean[] someState) throws Exception{
         int eval = countPsus(someState);
         if(!valid(o, someState)){
-            eval = o.getPsuIDs().length;
+            eval = o.getPsuIDs().length + 1; //damit auch alle psus losschicken besser ist
         }
         return eval;
     }
 
-    /* valid() determines wether the state is valid
+   /**
+    * valid() determines wether a given state is valid
     * a state is valid if it covers all the items in order,
     * it is valid when the order and the set have the same length
     *
-    * @ param   possibleState   HashSet with items of a specific state
+    * @ param   itemList        HashSet of items of a specific state that can be transported by selected PSUs
     *           orderlist       contains all items
-    * @ return   boolean         true == state is valid
+    * @ return  boolean         true == state is valid
     */
     public static boolean valid(Order o, boolean[] someState)throws Exception{
         Set<Integer> itemList = backToItems(o, someState);
         ArrayList<Integer> orderlist = o.getOrderList();
-        //wenn Anzahl der relevanten items gleich dem der Anzahl in order dann ist state valid:
+        //wenn Anzahl der transportierten items gleich der order Anzahl ist, dann ist state valid:
         if(itemList.size() == orderlist.size()){
             return true;
         }else{
@@ -54,7 +57,7 @@ public class StateMethods{
     /**
      * Neighbourhood: alle states, die von dem State erreicht werden können,
      * wenn jeweils der Wert von nur 1 Psu an oder ausgeschaltet wird
-     * alle states werden in arraylist gespeichert     * 
+     * alle states werden in arraylist gespeichert und zurückgegeben     
      */ 
     public static ArrayList<boolean[]> createNeighbours(boolean[] someState){
 
@@ -74,7 +77,6 @@ public class StateMethods{
         return hood;
     }
 
-
     /**
      * creates the random state representation for search algorithms
      * takes in the number of Psus in order to determine size of array
@@ -85,8 +87,7 @@ public class StateMethods{
         boolean [] state = new boolean [psuNumber];
     
         for(int i = 0; i < state.length; i++ ){
-            //creates a random number between 0 and 1, if its greater than 0.5 --> false
-            //smaller than 0.5 --> true
+            //creates a random number between 0 and 1, if its greater than 0.5 --> false, smaller than 0.5 --> true
             state[i] = (Math.random() < 0.5);
 
         }
@@ -116,7 +117,4 @@ public class StateMethods{
 
     }
 
-
-    public  void main(String[] args){
-    }
 }

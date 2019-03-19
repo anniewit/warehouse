@@ -5,32 +5,34 @@ import java.util.Scanner;
 
 public class Preprocessing {
 
-    public static void prepare(Order o) throws IOException, Exception { // throws Exception, FileNotFoundException
+    /**
+     * set up parameters for search, calls respective search algorithm and calls backtranslation after solution was found
+     * @param o contains user inputs and Zwischenergebnisse
+     */
+    public static void prepare(Order o) throws IOException, Exception {
+        //process the Order step by step
         reducePsus(o);
- //       System.out.println(Arrays.asList(o.getMap())); // test
-        String selectedAlg = o.getAlg();
-        System.out.println(selectedAlg);
+
         o.setSize();
-
-        int psuNr = o.getSize();    //testing
         getIdentifier(o); //extracts identifiers and sets them in order class
+        
+        //call the corresponding algorithm
+        String selectedAlg = o.getAlg();
+        int psuNr = o.getSize();  
         boolean[] solution = new boolean[psuNr];
-
         switch (selectedAlg){
-/*             case "Hill-Climbing": solution =  HillClimbing.hillClimbing(o);               
-                break; */
-
+             case "Hill-Climbing": solution =  HillClimbing.hillClimbing(o);               
+                break; 
             case "First-Choice Hill-Climbing": solution = FirstChoice.firstChoice(o);
                 break;
-
-                //Ist gerade nur zum kompilieren auskommentiert!, kommentar wegnehmen, zum testen
-    /*        case "Random-Restart Hill-Climbing":  solution = randomRestart(o);
-                break;
+            case "Random-Restart Hill-Climbing":  solution = randomRestart(o);
+                break; 
             case "Simulated Annealing": solution = SimulatedAnnealing.simulatedAnnealing(o);
                 break;
-            case "Local-Beam Search": solution = LocalBeam.local_beam(o);
-                break;  */
+            case "Local-Beam Search": solution = LocalBeam2.localBeamSearch(o);
+                break;  
         } 
+        //translate found solution back for printing
         Backtranslation.stateToMap(o, solution);
     } 
 
@@ -40,10 +42,9 @@ public class Preprocessing {
      * um suche zu beschleunigen
      * @param o enthält parameter der bestellung
      */
-    public static void reducePsus(Order o) throws IOException  {//Exception throws FileNotFoundException
+    public static void reducePsus(Order o) throws IOException  {
         
-        //HashMap<Integer,String> itemsInMap = warehouseReader(o); oben schon
-        readOrder(o); //damit getorder funktioniert
+        readOrder(o); //start by parsing order
         ArrayList<Integer> orderlist = o.getOrderList();
         HashMap<Integer,ArrayList<Integer>> psus = gettingPSUs(o);
 
@@ -61,7 +62,9 @@ public class Preprocessing {
         }
         o.setMap(relevantPSUs);
 } 
- 
+    /**
+     * parses a file using BufferedReader, returns a BufferedReader
+     */
     public static BufferedReader read(File file) throws FileNotFoundException {
         //BufferedReader ließt Warenhaus ein
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -70,12 +73,10 @@ public class Preprocessing {
 
     //BufferedReader ließt Warenhaus ein, mappt PSU identifier zu Nummern der Items
     private static HashMap<Integer,String> warehouseReader(Order o) throws IOException, FileNotFoundException{
-                 
-        //try{  
+                         
         String whPath = o.getWhPath();
         File whFile = new File(whPath);
-        
-           
+                   
         BufferedReader br = read(whFile);
         //nur Items werden eingelesen (erste Zeile)
         String[] items = br.readLine().split(" ");
@@ -85,17 +86,11 @@ public class Preprocessing {
         //Items bekommen einen Identifier:
         for(int i = 0; i <= items.length - 1; i++){
             itemsInMap.put(i, items[i]);
-            
         }
         o.setNames(itemsInMap);
-        return(itemsInMap);
-     /*    } catch(IOException e) {
-          e.printStackTrace();
-          return(null);
-        } */
-        
-
+        return(itemsInMap);       
     }
+
     /**
      * Hashset enthält alle bestellten items
      * Set, damit mehrmals auftretende Items in der order zusammengefasst werden können
@@ -116,7 +111,6 @@ public class Preprocessing {
         }
 
         sc.close();
-
         return order;
     }
 
@@ -125,7 +119,7 @@ public class Preprocessing {
      * checks if ordered items are in warehouse and assigns the numbers to the ordered items
      * sets order as an arraylist in the order class
      */
-    private static void readOrder(Order o) throws IOException {//
+    private static void readOrder(Order o) throws IOException {
         HashMap<Integer,String> itemsInMap = warehouseReader(o);
         HashSet order = orderReader(o);
 
@@ -144,7 +138,8 @@ public class Preprocessing {
     } 
 
     /**
-     * creates a hashmap of all psus, containing all psus mapped to the items stored in them
+     * creates a hashmap of all psus, containing the identifier of each PSU (as integer) 
+     * mapped to the items stored in them (their number)
      */
     public static HashMap<Integer,ArrayList<Integer>> gettingPSUs(Order o) throws IOException, FileNotFoundException{
         String line; //Eine Zeile in dem Warenhaus
@@ -152,32 +147,30 @@ public class Preprocessing {
         File whFile = new File(o.getWhPath());
         BufferedReader br = read(whFile);
         HashMap<Integer, String> itemsInMap = warehouseReader(o);
-        //Initalisierung der ArrayList<Integer>, darin werden die items gespeichert
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        //Initialisierung einer neuen HashMap,die die identifieres als keys und die items in listen als values hat.
+        ArrayList<Integer> list = new ArrayList<Integer>(); //speichert die items
+        //HashMap hat identifiers als keys und die items in listen als values
         HashMap<Integer,ArrayList<Integer>> psus = new HashMap<>();
 
-        //Diese Schleife durchläuft das Warenhaus Zeile für Zeile
+        //Falls item der Zeile in der HashMap ist wird dieses in ArrayList gespeichert
         while((line = br.readLine()) != null){
-        //Dann wird auf die items in der HashMap durch Map.Entry zugegriffen
             for(Map.Entry<Integer,String> entry : itemsInMap.entrySet()){
-                //Falls item der Zeile in der HashMap ist wird dieses in ArrayList gespeichert
                 if(line.contains(entry.getValue())){
                     list.add(entry.getKey());
                 }
             //eine neue Liste wird angefertigt und in der HashMap gespeichert
             psus.put(id, new ArrayList<Integer>(list));
             }
-        //die identifieres werden hochgezählt
-        id++;
-        //die liste wird gelöscht um neue Elemente zu speichern
-        list.clear();
+        id++;           //die identifiers werden hochgezählt
+        list.clear();   //die liste wird gelöscht um neue Elemente zu speichern
         }
 
         return psus;
     } 
 
-    //gets the key of the Hashmap --> the PSU identifiers 
+    /**
+     * gets the key of the Hashmap --> the PSU identifiers
+     * sets it into the Order Class, can be accessed over o.getPsuIDs() 
+     */ 
     public static void getIdentifier(Order o){
 
         HashMap psuMap = o.getMap();

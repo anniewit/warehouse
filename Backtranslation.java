@@ -7,8 +7,9 @@ public class Backtranslation {
      * Backtranslation after solution state has been found
      * new Hashmap(final psus) is created: for each activated PSU, 
      * adds the identifier of the psu and its items (as numbers) into Hashmap
-     * @param o
-     * @param state
+     * @param o Order class to access information about the order and warehouse
+     * @param state solution state found by the search algorithms
+     * calls the itemNrToString() function for next processing step
      */
     public static void stateToMap(Order o, boolean[] state){
         HashMap<Integer,ArrayList<Integer>> reducedWH = o.getMap();
@@ -27,9 +28,10 @@ public class Backtranslation {
     /**
      * Translates the item numbers that we have worked with until now back into the product names (string) of the items
      * for printing the solution back to the screen
-     * @param o
-     * @param itemNr
-     * @return a map of the final PSUs, their identifiers mapped to the item names as string
+     * @param o stores information about the Order
+     * @param solutionItemNrs List of the Items in the PSUs of the solution, stored by their item nr 
+     * sets a map of the final PSUs, their identifiers mapped to the item names as string 
+     * can be accessed by Interface from Order Class
      */
     public static void itemNrToString(Order o, HashMap<Integer, ArrayList<Integer>> solutionItemNrs){
       ///// HashMap<Integer,Integer[]> solutionItemNrs = o.getSolution();
